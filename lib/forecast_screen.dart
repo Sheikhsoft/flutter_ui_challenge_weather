@@ -238,17 +238,9 @@ class _SlidingRadialMenuState extends State<SlidingRadialMenu> with TickerProvid
   @override
   void initState() {
     super.initState();
-    widget.menuController.addListener(_onControllerChange);
-
-    widget.menuController.open().then((nothing) {
-      return widget.menuController.close();
-    }).then((nothing2) {
-      return widget.menuController.open();
-    }).then((nothing3) {
-      return widget.menuController.close();
-    }).then((nothing4) {
-      return widget.menuController.open();
-    });
+    widget.menuController
+      ..addListener(_onControllerChange)
+      ..open();
   }
 
   _onControllerChange() {
