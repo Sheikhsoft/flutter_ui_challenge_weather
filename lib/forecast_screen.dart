@@ -11,6 +11,7 @@ class TelescopingMenuScreen extends StatelessWidget {
   final ImageProvider blurredBackgroundImage;
   final double innerCircleRadius;
   final Offset circleOffset;
+  final SlidingRadialMenuController menuController;
   final Forecast forecast;
   final int currentForecastIndex;
 
@@ -18,6 +19,7 @@ class TelescopingMenuScreen extends StatelessWidget {
     @required this.clearBackgroundImage,
     @required this.blurredBackgroundImage,
     @required this.innerCircleRadius,
+    @required this.menuController,
     this.circleOffset = const Offset(0.0, 0.0),
     this.forecast,
     this.currentForecastIndex = 0,
@@ -85,6 +87,7 @@ class TelescopingMenuScreen extends StatelessWidget {
             menuLength: forecast.items.length,
             firstItemAngle: -pi/3,
             lastItemAngle: pi/3,
+            menuController: menuController,
             menuItemBuilder: (BuildContext context, int index) {
               return new TimeForecast(
                 time: forecast.items[index],
@@ -209,16 +212,18 @@ class SlidingRadialMenu extends StatefulWidget {
 
   final double radius;
   final int menuLength;
+  final SlidingRadialMenuController menuController;
   final Function(BuildContext, int index) menuItemBuilder;
   final double firstItemAngle;
   final double lastItemAngle;
 
   SlidingRadialMenu({
-    this.radius,
-    this.menuLength,
-    this.menuItemBuilder,
-    this.firstItemAngle,
-    this.lastItemAngle,
+    @required this.radius,
+    @required this.menuLength,
+    @required this.menuController,
+    @required this.menuItemBuilder,
+    @required this.firstItemAngle,
+    @required this.lastItemAngle,
   });
 
   @override
@@ -227,33 +232,20 @@ class SlidingRadialMenu extends StatefulWidget {
 
 class _SlidingRadialMenuState extends State<SlidingRadialMenu> with TickerProviderStateMixin {
 
-  SlidingRadialMenuController controller;
-
   @override
   void initState() {
     super.initState();
-    controller = new SlidingRadialMenuController(
-        itemCount: widget.menuLength,
-        vsync: this
-    )
-    ..addListener(_onControllerChange);
+    widget.menuController.addListener(_onControllerChange);
 
-    controller.open().then((nothing) {
-      return controller.close();
+    widget.menuController.open().then((nothing) {
+      return widget.menuController.close();
     }).then((nothing2) {
-      return controller.open();
+      return widget.menuController.open();
     }).then((nothing3) {
-      return controller.close();
+      return widget.menuController.close();
     }).then((nothing4) {
-      return controller.open();
+      return widget.menuController.open();
     });
-  }
-
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
   }
 
   _onControllerChange() {
@@ -266,10 +258,10 @@ class _SlidingRadialMenuState extends State<SlidingRadialMenu> with TickerProvid
     for (var index = 0; index < widget.menuLength; ++index) {
       menuItems.add(
         new Opacity(
-          opacity: controller.getItemOpacity(index),
+          opacity: widget.menuController.getItemOpacity(index),
           child: new RadialPosition(
             radius: widget.radius,
-            angle: controller.getItemAngle(index),
+            angle: widget.menuController.getItemAngle(index),
             child: widget.menuItemBuilder(context, index),
           ),
         )
@@ -343,6 +335,7 @@ class SlidingRadialMenuController extends ChangeNotifier {
           case AnimationStatus.completed:
             state = RadialMenuState.closed;
             _slideController.value = 0.0;
+            _fadeController.value = 0.0;
             notifyListeners();
             onClosedCompleter.complete();
             break;
@@ -406,6 +399,7 @@ class SlidingRadialMenuController extends ChangeNotifier {
 
   close() {
     if (state == RadialMenuState.open) {
+      print('Closing menu');
       _fadeController.forward();
       onClosedCompleter = new Completer();
       return onClosedCompleter.future;

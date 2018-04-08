@@ -31,7 +31,7 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => new _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   final Forecast forecast = new Forecast(
     items: [
@@ -63,7 +63,20 @@ class _MyHomePageState extends State<MyHomePage> {
     ],
   );
 
+  SlidingRadialMenuController menuController;
   bool isDrawerOpen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    menuController = new SlidingRadialMenuController(itemCount: 5, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    menuController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
             blurredBackgroundImage: new AssetImage('assets/weather-bk_enlarged.png'),
             innerCircleRadius: 140.0,
             circleOffset: const Offset(40.0, 0.0),
+            menuController: menuController,
             forecast: forecast,
           ),
 
@@ -172,7 +186,15 @@ class _MyHomePageState extends State<MyHomePage> {
               };
             }(),
 
-            child: new WeekDrawer(),
+            child: new WeekDrawer(
+              onDaySelected: (String title) {
+                setState(() {
+                  isDrawerOpen = false;
+
+                  menuController.close().then((nothing) => menuController.open());
+                });
+              },
+            ),
           ),
 
         ],
@@ -182,6 +204,43 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class WeekDrawer extends StatelessWidget {
+
+  final week = [
+    'Tuesday\nAugust 27',
+    'Wednesday\nAugust 28',
+    'Thursday\nAugust 29',
+    'Friday\nAugust 30',
+    'Saturday\nAugust 31',
+    'Sunday\nSeptember 1',
+    'Monday\nSeptember 2',
+  ];
+
+  final Function(String title) onDaySelected;
+
+  WeekDrawer({
+    this.onDaySelected,
+  });
+
+  List<Widget> _createDayButtons() {
+    return week.map((String title) {
+      return new Expanded(
+        child: new GestureDetector(
+          onTap: () {
+            onDaySelected(title);
+          },
+          child: new Text(
+            title,
+            style: new TextStyle(
+              color: Colors.white,
+              fontSize: 14.0,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return new BackdropFilter(
@@ -200,78 +259,8 @@ class WeekDrawer extends StatelessWidget {
                   color: Colors.white,
                   size: 40.0,
                 ),
-              ),
-              new Expanded(
-                child: new Text(
-                  'Tuesday\nAugust 27',
-                  style: new TextStyle(
-                    color: Colors.white,
-                    fontSize: 14.0,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              new Expanded(
-                child: new Text(
-                  'Tuesday\nAugust 27',
-                  style: new TextStyle(
-                    color: Colors.white,
-                    fontSize: 14.0,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              new Expanded(
-                child: new Text(
-                  'Tuesday\nAugust 27',
-                  style: new TextStyle(
-                    color: Colors.white,
-                    fontSize: 14.0,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              new Expanded(
-                child: new Text(
-                  'Tuesday\nAugust 27',
-                  style: new TextStyle(
-                    color: Colors.white,
-                    fontSize: 14.0,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              new Expanded(
-                child: new Text(
-                  'Tuesday\nAugust 27',
-                  style: new TextStyle(
-                    color: Colors.white,
-                    fontSize: 14.0,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              new Expanded(
-                child: new Text(
-                  'Tuesday\nAugust 27',
-                  style: new TextStyle(
-                    color: Colors.white,
-                    fontSize: 14.0,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              new Expanded(
-                child: new Text(
-                  'Tuesday\nAugust 27',
-                  style: new TextStyle(
-                    color: Colors.white,
-                    fontSize: 14.0,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
+              )]
+              ..addAll(_createDayButtons()),
           ),
         ),
       ),
