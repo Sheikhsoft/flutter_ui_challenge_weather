@@ -98,58 +98,54 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             top: 0.0,
             left: 0.0,
             right: 0.0,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                new Padding(
-                  padding: const EdgeInsets.only(left: 16.0, top: 32.0, bottom: 16.0),
-                  child: new Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      new Text(
-                        'Tuesday, August 27',
-                        style: new TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
-                        )
-                      ),
-                      new Text(
-                        'Sacramento',
-                        style: new TextStyle(
-                          color: Colors.white,
-                          fontSize: 30.0,
-                        )
-                      ),
-                    ],
+            child: new AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0.0,
+              centerTitle: false,
+              title: new Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  new Text(
+                      'Tuesday, August 27',
+                      style: new TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.0,
+                      )
                   ),
-                ),
-                new Expanded(child: new Container()),
-                new Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: new DelayedChange(
-                    delay: isDrawerOpen
+                  new Text(
+                      'Sacramento',
+                      style: new TextStyle(
+                        color: Colors.white,
+                        fontSize: 30.0,
+                      )
+                  ),
+                ],
+              ),
+              actions: [
+                new DelayedChange(
+                  delay: isDrawerOpen
                       ? const Duration(milliseconds: 200)
                       : const Duration(milliseconds: 0),
-                    animatedWidgetBuilder: () {
-                      final _isDrawerOpen = isDrawerOpen;
-                      return (BuildContext context, Widget child) {
-                        return new AnimatedOpacity(
-                          opacity: _isDrawerOpen ? 0.0 : 1.0,
-                          duration: const Duration(milliseconds: 200),
-                          child: child,
-                        );
-                      };
-                    }(),
-                    child: new IconButton(
-                      icon: new Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.white,
-                        size: 35.0,
-                      ),
-                      onPressed: () {
-                        setState(() => isDrawerOpen = true);
-                      },
+                  animatedWidgetBuilder: () {
+                    final _isDrawerOpen = isDrawerOpen;
+                    return (BuildContext context, Widget child) {
+                      return new AnimatedOpacity(
+                        opacity: _isDrawerOpen ? 0.0 : 1.0,
+                        duration: const Duration(milliseconds: 200),
+                        child: child,
+                      );
+                    };
+                  }(),
+                  child: new IconButton(
+                    icon: new Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.white,
+                      size: 35.0,
                     ),
+                    onPressed: () {
+                      setState(() => isDrawerOpen = true);
+                    },
                   ),
                 )
               ],
