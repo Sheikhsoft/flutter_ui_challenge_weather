@@ -29,6 +29,9 @@ flutter:
   assets:
    - assets/weather-bk.png
    - assets/weather-bk_enlarged.png
+   - assets/ic_cloudy.png
+   - assets/ic_rain.png
+   - assets/ic_sunny.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.
