@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
+import 'package:weather/rain.dart';
 
 class TelescopingMenuScreen extends StatelessWidget {
 
@@ -46,6 +47,8 @@ class TelescopingMenuScreen extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
+
+        new RainScreen(),
 
         // Translucent white overlay with circles cut out.
         new CustomPaint(
