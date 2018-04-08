@@ -316,6 +316,9 @@ class SlidingRadialMenuController extends ChangeNotifier {
             notifyListeners();
             onOpenedCompleter.complete();
             break;
+          case AnimationStatus.reverse:
+          case AnimationStatus.dismissed:
+            break;
         }
       });
 
@@ -333,6 +336,9 @@ class SlidingRadialMenuController extends ChangeNotifier {
             _fadeController.value = 0.0;
             notifyListeners();
             onClosedCompleter.complete();
+            break;
+          case AnimationStatus.reverse:
+          case AnimationStatus.dismissed:
             break;
         }
       });
