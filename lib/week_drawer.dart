@@ -43,28 +43,44 @@ class WeekDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-//    return new BackdropFilter(
-//      filter: new ImageFilter.blur(sigmaX: 3.0, sigmaY:3.0),
-//      child: new Container(
-      return new Container(
-        width: 125.0,
-        height: double.infinity,
-        color: const Color(0xAA234060),
-        child: new Padding(
-          padding: const EdgeInsets.only(top: 16.0),
-          child: new Column(
-            children: [
-              new Expanded(
-                child: new Icon(
-                  Icons.refresh,
-                  color: Colors.white,
-                  size: 40.0,
-                ),
-              )]
-              ..addAll(_createDayButtons()),
+    return new ClipRect(
+      clipper: new RectClipper(),
+      child: new BackdropFilter(
+        filter: new ImageFilter.blur(sigmaX: 3.0, sigmaY:3.0),
+        child: new Container(
+//      return new Container(
+          width: 125.0,
+          height: double.infinity,
+          color: const Color(0xAA234060),
+          child: new Padding(
+            padding: const EdgeInsets.only(top: 16.0),
+            child: new Column(
+              children: [
+                new Expanded(
+                  child: new Icon(
+                    Icons.refresh,
+                    color: Colors.white,
+                    size: 40.0,
+                  ),
+                )]
+                ..addAll(_createDayButtons()),
+            ),
           ),
         ),
-//      ),
+      ),
     );
   }
+}
+
+class RectClipper extends CustomClipper<Rect> {
+  @override
+  Rect getClip(Size size) {
+    return new Rect.fromLTWH(0.0, 0.0, size.width, size.height);
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Rect> oldClipper) {
+    return true;
+  }
+
 }
