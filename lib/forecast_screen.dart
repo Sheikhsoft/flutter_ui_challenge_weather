@@ -29,6 +29,7 @@ class TelescopingMenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Stack(
+      fit: StackFit.expand,
       children: [
         // Blurry Foreground Backdrop
         new Image(
@@ -390,7 +391,6 @@ class SlidingRadialMenuController extends ChangeNotifier {
 
   Future open() {
     if (state == RadialMenuState.closed) {
-      print('Opening menu');
       _slideController.forward();
       onOpenedCompleter = new Completer();
       return onOpenedCompleter.future;
@@ -400,7 +400,6 @@ class SlidingRadialMenuController extends ChangeNotifier {
 
   close() {
     if (state == RadialMenuState.open) {
-      print('Closing menu');
       _fadeController.forward();
       onClosedCompleter = new Completer();
       return onClosedCompleter.future;

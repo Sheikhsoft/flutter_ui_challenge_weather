@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:weather/delayed_change.dart';
 import 'package:weather/forecast_screen.dart';
+import 'package:weather/spinner_text.dart';
 import 'package:weather/week_drawer.dart';
 
 void main() {
@@ -66,6 +67,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   SlidingRadialMenuController menuController;
   bool isDrawerOpen = false;
+  String selectedDay = 'Tuesday, August 27';
 
   @override
   void initState() {
@@ -107,24 +109,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   new SpinnerText(
-                    text: 'Tuesday, August 27',
-                    textBuilder: (BuildContext context, String text) {
-                      return new Text(
-                        text,
-                        style: new TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
-                        ),
-                      );
-                    },
+                    text: selectedDay,
                   ),
-//                  new Text(
-//                      'Tuesday, August 27',
-//                      style: new TextStyle(
-//                        color: Colors.white,
-//                        fontSize: 16.0,
-//                      )
-//                  ),
                   new Text(
                       'Sacramento',
                       style: new TextStyle(
@@ -199,6 +185,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               onDaySelected: (String title) {
                 setState(() {
                   isDrawerOpen = false;
+                  selectedDay = title.replaceAll('\n', ', ');
                   menuController.close().then((nothing) => menuController.open());
                 });
               },
@@ -209,46 +196,3 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 }
-
-class SpinnerText extends StatefulWidget {
-
-  final String text;
-  final Function(BuildContext context, String text) textBuilder;
-
-  SpinnerText({
-    this.text,
-    this.textBuilder,
-  });
-
-  @override
-  _SpinnerTextState createState() => new _SpinnerTextState();
-}
-
-class _SpinnerTextState extends State<SpinnerText> {
-
-  String text1 = '';
-  String text2 = '';
-
-
-  @override
-  void initState() {
-    super.initState();
-    text1 = widget.text;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return new Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        text2.isEmpty
-          ? new Container()
-          : widget.textBuilder(context, text2),
-        widget.textBuilder(context, text1),
-      ]
-    );
-  }
-}
-
-

@@ -12,12 +12,6 @@ ImageMap _images;
 // individual sprites.
 SpriteSheet _sprites;
 
-enum WeatherType {
-  sun,
-  rain,
-  snow
-}
-
 class RainScreen extends StatefulWidget {
   @override
   _RainScreenState createState() => new _RainScreenState();
@@ -73,7 +67,6 @@ class _RainScreenState extends State<RainScreen> {
 
     // All assets are loaded, build the whole app with weather buttons
     // and the WeatherWorld.
-    print('Rendering SpriteWidget');
     return new SpriteWidget(weatherWorld);
   }
 }
