@@ -106,13 +106,25 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  new Text(
-                      'Tuesday, August 27',
-                      style: new TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.0,
-                      )
+                  new SpinnerText(
+                    text: 'Tuesday, August 27',
+                    textBuilder: (BuildContext context, String text) {
+                      return new Text(
+                        text,
+                        style: new TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
+                        ),
+                      );
+                    },
                   ),
+//                  new Text(
+//                      'Tuesday, August 27',
+//                      style: new TextStyle(
+//                        color: Colors.white,
+//                        fontSize: 16.0,
+//                      )
+//                  ),
                   new Text(
                       'Sacramento',
                       style: new TextStyle(
@@ -198,5 +210,45 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 }
 
+class SpinnerText extends StatefulWidget {
+
+  final String text;
+  final Function(BuildContext context, String text) textBuilder;
+
+  SpinnerText({
+    this.text,
+    this.textBuilder,
+  });
+
+  @override
+  _SpinnerTextState createState() => new _SpinnerTextState();
+}
+
+class _SpinnerTextState extends State<SpinnerText> {
+
+  String text1 = '';
+  String text2 = '';
+
+
+  @override
+  void initState() {
+    super.initState();
+    text1 = widget.text;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        text2.isEmpty
+          ? new Container()
+          : widget.textBuilder(context, text2),
+        widget.textBuilder(context, text1),
+      ]
+    );
+  }
+}
 
 

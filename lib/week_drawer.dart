@@ -43,24 +43,30 @@ class WeekDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new BackdropFilter(
-      filter: new ImageFilter.blur(sigmaX: 3.0, sigmaY:3.0),
-      child: new Container(
+    return new ConstrainedBox(
+      constraints: new BoxConstraints.expand(
         width: 125.0,
-        height: double.infinity,
-        color: const Color(0xAA234060),
-        child: new Padding(
-          padding: const EdgeInsets.only(top: 16.0),
-          child: new Column(
-            children: [
-              new Expanded(
-                child: new Icon(
-                  Icons.refresh,
-                  color: Colors.white,
-                  size: 40.0,
-                ),
-              )]
-              ..addAll(_createDayButtons()),
+        height: double.infinity
+      ),
+      child: new BackdropFilter(
+        filter: new ImageFilter.blur(sigmaX: 3.0, sigmaY:3.0),
+        child: new Container(
+          width: 125.0,
+          height: double.infinity,
+          color: const Color(0xAA234060),
+          child: new Padding(
+            padding: const EdgeInsets.only(top: 16.0),
+            child: new Column(
+              children: [
+                new Expanded(
+                  child: new Icon(
+                    Icons.refresh,
+                    color: Colors.white,
+                    size: 40.0,
+                  ),
+                )]
+                ..addAll(_createDayButtons()),
+            ),
           ),
         ),
       ),
