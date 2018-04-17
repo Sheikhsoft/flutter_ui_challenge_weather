@@ -38,7 +38,50 @@ class _MyHomePageState extends State<MyHomePage> {
             frostedBackground: new AssetImage('assets/weather-bk_enlarged.png'),
             seeThruCircleRadius: 140.0,
             seeThruCircleOffset: const Offset(40.0, 0.0),
-          )
+          ),
+
+          // App Bar
+          new Positioned(
+            top: 0.0,
+            left: 0.0,
+            right: 0.0,
+            child: new AppBar(
+              centerTitle: false,
+              backgroundColor: Colors.transparent,
+              elevation: 0.0,
+              title: new Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  new Text(
+                    'Thursday, August 29',
+                    style: new TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                    ),
+                  ),
+                  new Text(
+                    'Sacramento',
+                    style: new TextStyle(
+                      color: Colors.white,
+                      fontSize: 30.0,
+                    )
+                  ),
+                ],
+              ),
+              actions: <Widget>[
+                new IconButton(
+                  icon: new Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colors.white,
+                    size: 35.0,
+                  ),
+                  onPressed: () {
+                    // TODO:
+                  }
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
