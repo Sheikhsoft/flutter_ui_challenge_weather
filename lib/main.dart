@@ -33,6 +33,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
 
+  String selectedDate = 'Thursday, August 27';
   OpenableController openableController;
 
   @override
@@ -64,6 +65,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
             left: 0.0,
             right: 0.0,
             child: new ForecastAppBar(
+              dateText: selectedDate,
               onDrawerArrowTap: openableController.open,
             ),
           ),
@@ -73,6 +75,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
             openableController: openableController,
             drawer: new WeekDrawer(
               onDaySelected: (String title) {
+                setState(() => selectedDate = title.replaceAll('\n', ', '));
                 openableController.close();
               },
             ),
