@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weather/forecast/background/background_with_rings.dart';
+import 'package:weather/forecast/background/rain.dart';
 import 'package:weather/forecast/forecast_list.dart';
 import 'package:weather/forecast/radial_list.dart';
 
@@ -51,6 +52,8 @@ class Forecast extends StatelessWidget {
                 );
               }
           ),
+
+          new Rain(),
         ]
     );
   }
