@@ -14,12 +14,18 @@ class WeekDrawer extends StatelessWidget {
     'Monday\nAugust 2',
   ];
 
+  final Function(String title) onDaySelected;
+
+  WeekDrawer({
+    this.onDaySelected,
+  });
+
   List<Widget> _buildDayButtons() {
     return week.map((String title) {
       return new Expanded(
         child: new GestureDetector(
           onTap: () {
-            // TODO:
+            onDaySelected(title);
           },
           child: new Text(
             title,
