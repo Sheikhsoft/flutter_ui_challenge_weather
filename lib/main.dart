@@ -2,9 +2,10 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:weather/forecast/forecast.dart';
 import 'package:weather/forecast/app_bar.dart';
-import 'package:weather/forecast/background/background_with_rings.dart';
+import 'package:weather/forecast/forecast.dart';
+import 'package:weather/forecast/forecast_list.dart';
+import 'package:weather/forecast/radial_list.dart';
 import 'package:weather/forecast/week_drawer.dart';
 import 'package:weather/generic_widgets/sliding_drawer.dart';
 
@@ -32,10 +33,11 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => new _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
+class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   String selectedDate = 'Thursday, August 27';
   OpenableController openableController;
+  SlidingRadialListController listController;
 
   @override
   void initState() {
@@ -46,6 +48,12 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         openDuration: const Duration(milliseconds: 250)
     )
     ..addListener(() => setState(() {}));
+
+    listController = new SlidingRadialListController(
+      itemCount: forecastRadialList.items.length,
+      vsync: this,
+    )
+    ..open();
   }
 
   @override
@@ -53,7 +61,10 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     return new Scaffold(
       body: new Stack(
         children: <Widget>[
-          new Forecast(),
+          new Forecast(
+            list: forecastRadialList,
+            listController: listController,
+          ),
 
           // App Bar
           new Positioned(
@@ -73,6 +84,11 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
               onDaySelected: (String title) {
                 setState(() => selectedDate = title.replaceAll('\n', ', '));
                 openableController.close();
+                listController
+                  .close()
+                  .then((_) {
+                    listController.open();
+                  });
               },
             ),
           ),

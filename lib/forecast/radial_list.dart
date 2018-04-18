@@ -1,43 +1,58 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:weather/generic_widgets/radial_position.dart';
 
-class RadialList extends StatelessWidget {
+class SlidingRadialList extends StatefulWidget {
 
   final RadialListViewModel radialList;
+  final SlidingRadialListController controller;
 
-  RadialList({
-    this.radialList,
+  SlidingRadialList({
+    @required this.radialList,
+    @required this.controller,
   });
 
+  @override
+  SlidingRadialListState createState() {
+    return new SlidingRadialListState();
+  }
+}
+
+class SlidingRadialListState extends State<SlidingRadialList> {
+
   List<Widget> _buildRadialMenuItems() {
-    final double firstItemAngle = -pi/3;
-    final double lastItemAngle = pi/3;
-    final double angleDiff = (lastItemAngle - firstItemAngle) / (radialList.items.length - 1);
+    int index = 0;
 
-    double currAngle = firstItemAngle;
+    return widget.radialList.items.map((RadialListItemViewModel viewModel) {
+      final listItem = _buildRadialMenuItem(
+          viewModel,
+          widget.controller.getItemAngle(index),
+          widget.controller.getItemOpacity(index),
+      );
+      index++;
 
-    return radialList.items.map((RadialListItemViewModel viewModel) {
-      final listItem = _buildRadialMenuItem(viewModel, currAngle);
-      currAngle += angleDiff;
       return listItem;
     }).toList();
   }
 
-  Widget _buildRadialMenuItem(RadialListItemViewModel viewModel, double angle) {
+  Widget _buildRadialMenuItem(RadialListItemViewModel viewModel, double angle, double opacity) {
     return new Transform(
       transform: new Matrix4.translationValues(
           40.0,
           334.0,
           0.0
       ),
-      child: new RadialPosition(
-        radius: 140.0 + 75.0,
-        angle: angle,
-        child: new RadialListItem(
-          listItem: viewModel,
+      child: new Opacity(
+        opacity: opacity,
+        child: new RadialPosition(
+          radius: 140.0 + 75.0,
+          angle: angle,
+          child: new RadialListItem(
+            listItem: viewModel,
+          ),
         ),
       ),
     );
@@ -49,6 +64,140 @@ class RadialList extends StatelessWidget {
       children: _buildRadialMenuItems(),
     );
   }
+}
+
+class SlidingRadialListController extends ChangeNotifier {
+  final double firstItemAngle = -pi/3;
+  final double lastItemAngle = pi/3;
+  final double startSlidingAngle = 3 * pi / 4;
+
+  final int itemCount;
+  final List<Animation<double>> _slidePositions;
+  final AnimationController _slideController;
+  final AnimationController _fadeController;
+  RadialListState _state = RadialListState.closed;
+  Completer onOpenedCompleter;
+  Completer onClosedCompleter;
+
+  SlidingRadialListController({
+    this.itemCount,
+    vsync,
+  }) : _slideController = new AnimationController(
+        duration: const Duration(milliseconds: 1500),
+        vsync: vsync,
+      ),
+      _fadeController = new AnimationController(
+        duration: const Duration(milliseconds: 150),
+        vsync: vsync,
+      ),
+      _slidePositions = [] {
+    _slideController..addListener(() => notifyListeners())
+      ..addStatusListener((AnimationStatus status) {
+        switch (status) {
+          case AnimationStatus.forward:
+            _state = RadialListState.slidingOpen;
+            notifyListeners();
+            break;
+          case AnimationStatus.completed:
+            _state = RadialListState.open;
+            notifyListeners();
+            onOpenedCompleter.complete();
+            break;
+          case AnimationStatus.reverse:
+          case AnimationStatus.dismissed:
+            break;
+        }
+      });
+
+    _fadeController..addListener(() => notifyListeners())
+      ..addStatusListener((AnimationStatus status) {
+        switch (status) {
+          case AnimationStatus.forward:
+            _state = RadialListState.fadingOut;
+            notifyListeners();
+            break;
+          case AnimationStatus.completed:
+            _state = RadialListState.closed;
+            _slideController.value = 0.0;
+            _fadeController.value = 0.0;
+            notifyListeners();
+            onClosedCompleter.complete();
+            break;
+          case AnimationStatus.reverse:
+          case AnimationStatus.dismissed:
+            break;
+        }
+      });
+
+    final delayInterval = 0.1;
+    final slideInterval = 0.5;
+    final angleDeltaPerItem = (lastItemAngle - firstItemAngle) / (itemCount - 1);
+    for (var i = 0; i < itemCount; ++i) {
+      final start = delayInterval * i;
+      final end = start + slideInterval;
+
+      final endSlidePosition = firstItemAngle + (angleDeltaPerItem * i);
+      _slidePositions.add(
+        new Tween(
+          begin: startSlidingAngle,
+          end: endSlidePosition,
+        ).animate(
+          new CurvedAnimation(
+            parent: _slideController,
+            curve: new Interval(start, end, curve: Curves.easeInOut),
+          )
+        )
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _slideController.dispose();
+    _fadeController.dispose();
+    super.dispose();
+  }
+
+  getItemAngle(int index) {
+    return _slidePositions[index].value;
+  }
+
+  getItemOpacity(int index) {
+    switch (_state) {
+      case RadialListState.closed:
+        return 0.0;
+      case RadialListState.slidingOpen:
+      case RadialListState.open:
+        return 1.0;
+      case RadialListState.fadingOut:
+        return (1.0 - _fadeController.value);
+    }
+  }
+
+  Future open() {
+    if (_state == RadialListState.closed) {
+      _slideController.forward();
+      onOpenedCompleter = new Completer();
+      return onOpenedCompleter.future;
+    }
+    return null;
+  }
+
+  Future close() {
+    if (_state == RadialListState.open) {
+      _fadeController.forward();
+      onClosedCompleter = new Completer();
+      return onClosedCompleter.future;
+    }
+    return null;
+  }
+}
+
+enum RadialListState {
+  closed,
+  slidingOpen,
+  open,
+  fadingOut,
 }
 
 class RadialListItem extends StatelessWidget {

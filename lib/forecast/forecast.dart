@@ -5,6 +5,14 @@ import 'package:weather/forecast/radial_list.dart';
 
 class Forecast extends StatelessWidget {
 
+  final RadialListViewModel list;
+  final SlidingRadialListController listController;
+
+  Forecast({
+    this.list,
+    this.listController,
+  });
+
   Widget _buildTemperatureText() {
     return new Align(
       alignment: Alignment.centerLeft,
@@ -24,20 +32,26 @@ class Forecast extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Stack(
-      children: <Widget>[
-        new BackgroundWithRings(
-          rawBackground: new AssetImage('assets/weather-bk.png'),
-          frostedBackground: new AssetImage('assets/weather-bk_enlarged.png'),
-          seeThruCircleRadius: 140.0,
-          seeThruCircleOffset: const Offset(40.0, 0.0),
-        ),
+        children: <Widget>[
+          new BackgroundWithRings(
+            rawBackground: new AssetImage('assets/weather-bk.png'),
+            frostedBackground: new AssetImage('assets/weather-bk_enlarged.png'),
+            seeThruCircleRadius: 140.0,
+            seeThruCircleOffset: const Offset(40.0, 0.0),
+          ),
 
-        _buildTemperatureText(),
+          _buildTemperatureText(),
 
-        new RadialList(
-          radialList: forecastRadialList,
-        )
-      ]
+          new AnimatedBuilder(
+              animation: listController,
+              builder: (BuildContext context, Widget child) {
+                return new SlidingRadialList(
+                  radialList: forecastRadialList,
+                  controller: listController,
+                );
+              }
+          ),
+        ]
     );
   }
 }
