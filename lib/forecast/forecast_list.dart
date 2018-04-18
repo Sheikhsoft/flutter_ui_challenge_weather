@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:weather/forecast/forecast.dart';
+import 'package:weather/forecast/radial_list.dart';
 
 final RadialListViewModel forecastRadialList = new RadialListViewModel(
   items: [
