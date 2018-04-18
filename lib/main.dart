@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:weather/forecast/app_bar.dart';
 import 'package:weather/forecast/background/background_with_rings.dart';
+import 'package:weather/forecast/forecast.dart';
+import 'package:weather/forecast/forecast_list.dart';
 import 'package:weather/forecast/week_drawer.dart';
 import 'package:weather/generic_widgets/sliding_drawer.dart';
 
@@ -47,7 +49,9 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     return new Scaffold(
       body: new Stack(
         children: <Widget>[
-          new BackgroundWithRings(),
+          new Forecast(
+            radialList: forecastRadialList,
+          ),
 
           new Positioned(
             top: 0.0,
