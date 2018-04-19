@@ -4,6 +4,7 @@ import 'package:weather/forecast/app_bar.dart';
 import 'package:weather/forecast/background/background_with_rings.dart';
 import 'package:weather/forecast/forecast.dart';
 import 'package:weather/forecast/forecast_list.dart';
+import 'package:weather/forecast/radial_list.dart';
 import 'package:weather/forecast/week_drawer.dart';
 import 'package:weather/generic_widgets/sliding_drawer.dart';
 
@@ -28,9 +29,10 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => new _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
+class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   OpenableController openableController;
+  SlidingRadialListController slidingListController;
   String selectedDay = 'Monday, August 26';
 
   @override
@@ -42,6 +44,12 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
       openDuration: const Duration(milliseconds: 250),
     )
     ..addListener(() => setState(() {}));
+
+    slidingListController = new SlidingRadialListController(
+      itemCount: forecastRadialList.items.length,
+      vsync: this,
+    )
+    ..open();
   }
 
   @override
@@ -51,6 +59,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         children: <Widget>[
           new Forecast(
             radialList: forecastRadialList,
+            slidingListController: slidingListController,
           ),
 
           new Positioned(
@@ -70,6 +79,10 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
                 setState(() {
                   selectedDay = title.replaceAll('\n', ', ');
                 });
+
+                slidingListController
+                    .close()
+                    .then((_) => slidingListController.open());
 
                 openableController.close();
               },

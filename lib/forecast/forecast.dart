@@ -6,9 +6,11 @@ import 'package:weather/forecast/radial_list.dart';
 class Forecast extends StatelessWidget {
 
   RadialListViewModel radialList;
+  SlidingRadialListController slidingListController;
 
   Forecast({
     @required this.radialList,
+    @required this.slidingListController,
   });
 
   Widget _temperatureText() {
@@ -35,8 +37,9 @@ class Forecast extends StatelessWidget {
 
         _temperatureText(),
 
-        new RadialList(
+        new SlidingRadialList(
           radialList: radialList,
+          controller: slidingListController,
         )
       ],
     );
